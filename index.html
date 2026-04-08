@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruben PIRES — Game Developer Portfolio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f9f9f9; --surface: #ffffff; --surface2: #f2f2f2;
+      --border: #e2e2e2; --text: #1a1a1a; --muted: #6b7280;
+      --accent: #2563eb; --accent2: #7c3aed; --accent3: #059669;
+      --unity: #2563eb; --unreal: #ef4444; --custom: #7c3aed;
+      --radius: 12px; --shadow: 0 4px 24px rgba(0,0,0,0.07);
+      --transition: 0.3s cubic-bezier(.4,0,.2,1);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; object-fit: cover; }
+    section { padding: 100px 0; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(249,249,249,0.88); backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+      padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+      transition: box-shadow var(--transition);
+    }
+    nav.scrolled { box-shadow: var(--shadow); }
+    .nav-logo { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+    .nav-logo span {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: 800;
+    }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 0.88rem; font-weight: 500; color: var(--muted); transition: color var(--transition); position: relative; }
+    .nav-links a::after { content:''; position: absolute; bottom: -4px; left:0; right:0; height:2px; background: var(--accent); border-radius:1px; transform:scaleX(0); transition:transform var(--transition); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--text); }
+    .nav-cta { background: var(--accent); color: white !important; padding: 8px 18px; border-radius: 8px; font-weight: 600 !important; font-size: 0.83rem !important; transition: opacity var(--transition) !important; }
+    .nav-cta:hover { opacity: 0.85; }
+    .nav-cta::after { display: none !important; }
+    .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; }
+
+    /* ─── CONTAINER ─── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── HERO ─── */
+    #hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 0 80px; position: relative; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 6px 14px; font-size: 0.78rem; font-weight: 600; color: var(--muted); margin-bottom: 20px; }
+    .hero-tag::before { content:''; width:8px; height:8px; border-radius:50%; background: var(--accent3); display:block; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.85)} }
+    .hero-title { font-size: clamp(2.2rem, 4.5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 18px; }
+    .hero-title .gradient-text { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .hero-school { display: inline-flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 18px; }
+    .hero-sub { font-size: 1rem; color: var(--muted); margin-bottom: 32px; max-width: 480px; line-height: 1.75; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; cursor: pointer; border: none; transition: all var(--transition); }
+    .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 14px rgba(37,99,235,.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,.4); }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--surface2); transform: translateY(-2px); }
+    .hero-stats { display: flex; gap: 28px; margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--border); }
+    .stat { display: flex; flex-direction: column; }
+    .stat-number { font-size: 1.7rem; font-weight: 800; letter-spacing: -1px; }
+    .stat-label { font-size: 0.72rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
+    .hero-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); transition: transform var(--transition), box-shadow var(--transition); }
+    .hero-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.1); }
+    .hero-card.wide { grid-column: span 2; }
+    .hero-card .card-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 10px; }
+    .hero-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .hero-card p { font-size: 0.76rem; color: var(--muted); }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 0.68rem; font-weight: 600; margin-top: 8px; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: -1; opacity: .2; }
+    .blob1 { width: 500px; height: 500px; background: var(--accent); top: -100px; right: -100px; }
+    .blob2 { width: 300px; height: 300px; background: var(--accent2); bottom: 0; left: -80px; }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-tag { display: inline-block; background: var(--surface2); border-radius: 100px; padding: 4px 14px; font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 14px; }
+    .section-title { font-size: clamp(1.7rem, 3.5vw, 2.5rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+    .section-desc { color: var(--muted); font-size: 0.95rem; max-width: 520px; margin: 0 auto; }
+
+    /* ─── ABOUT ─── */
+    #about { background: var(--surface); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: center; }
+    .about-img-wrap { position: relative; }
+    .about-avatar { width: 100%; max-width: 340px; border-radius: 20px; background: linear-gradient(135deg, var(--surface2), var(--border)); aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; font-size: 5rem; border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+    .about-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .about-badge { position: absolute; bottom: -16px; right: -16px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; }
+    .about-badge .icon { font-size: 1.4rem; }
+    .about-badge strong { display: block; font-size: 0.85rem; font-weight: 700; }
+    .about-badge span { font-size: 0.73rem; color: var(--muted); }
+    .about-content h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 14px; letter-spacing: -.5px; }
+    .about-content p { color: var(--muted); margin-bottom: 18px; line-height: 1.8; }
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
+    .skill-item { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; transition: border-color var(--transition), transform var(--transition); }
+    .skill-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .skill-icon { font-size: 1.1rem; }
+    .skill-name { font-size: 0.82rem; font-weight: 600; }
+    .skill-level { font-size: 0.7rem; color: var(--muted); }
+
+    /* ─── PROJECTS ─── */
+    #projects { background: var(--bg); }
+    .project-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 44px; flex-wrap: wrap; }
+    .tab-btn { padding: 9px 20px; border-radius: 100px; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all var(--transition); display: flex; align-items: center; gap: 7px; }
+    .tab-btn .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .tab-btn:hover { border-color: var(--text); color: var(--text); }
+    .tab-btn.active { color: white; border-color: transparent; }
+    .tab-btn.active.unity  { background: var(--unity);  box-shadow: 0 4px 14px rgba(37,99,235,.35); }
+    .tab-btn.active.unreal { background: var(--unreal); box-shadow: 0 4px 14px rgba(239,68,68,.35); }
+    .tab-btn.active.custom { background: var(--custom); box-shadow: 0 4px 14px rgba(124,58,237,.35); }
+    .tab-btn.active.all    { background: var(--text);   box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+    .projects-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; }
+    .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform var(--transition), box-shadow var(--transition); }
+    .project-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.1); }
+    .project-card.hidden { display: none; }
+    .project-thumb {
+      aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem; position: relative; overflow: hidden; cursor: pointer;
+    }
+    .project-thumb img { position: absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .project-thumb .thumb-emoji { position: relative; z-index:1; transition: opacity var(--transition); }
+    .project-thumb img ~ .thumb-emoji { display: none; }
+    .project-thumb .thumb-label { position: absolute; bottom: 10px; left: 12px; z-index: 2; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-radius: 6px; padding: 3px 10px; font-size: 0.68rem; font-weight: 700; letter-spacing: .5px; }
+    /* Edit mode upload overlay */
+    .upload-overlay { position: absolute; inset:0; background: rgba(37,99,235,0.08); border: 2px dashed var(--accent); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 6px; z-index: 10; cursor: pointer; transition: background var(--transition); }
+    .upload-overlay:hover { background: rgba(37,99,235,0.15); }
+    .upload-overlay span { font-size: 0.78rem; font-weight: 600; color: var(--accent); }
+    .edit-mode .upload-overlay { display: flex; }
+    .project-body { padding: 18px; }
+    .project-type { display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .project-type .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .project-title { font-size: 1rem; font-weight: 700; margin-bottom: 7px; }
+    .project-desc { font-size: 0.81rem; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag { padding: 3px 9px; border-radius: 100px; background: var(--surface2); font-size: 0.7rem; font-weight: 500; color: var(--muted); border: 1px solid var(--border); }
+    .project-footer { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .project-links { display: flex; gap: 8px; }
+    .link-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 0.76rem; font-weight: 600; padding: 5px 11px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg); transition: all var(--transition); }
+    .link-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+    /* Editable fields */
+    [contenteditable="true"] { outline: none; border-radius: 4px; transition: background var(--transition); }
+    .edit-mode [contenteditable="true"]:hover { background: rgba(37,99,235,0.06); }
+    .edit-mode [contenteditable="true"]:focus { background: rgba(37,99,235,0.08); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
+    .edit-mode .link-btn { border-color: var(--accent); border-style: dashed; }
+    /* Add project btn */
+    .add-project-card {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      display: none; align-items: center; justify-content: center;
+      min-height: 200px; cursor: pointer; transition: all var(--transition);
+      flex-direction: column; gap: 8px; color: var(--muted);
+      font-size: 0.85rem; font-weight: 600;
+    }
+    .add-project-card:hover { border-color: var(--accent); color: var(--accent); background: rgba(37,99,235,0.03); }
+    .add-project-card .plus { font-size: 2rem; line-height: 1; }
+    .edit-mode .add-project-card { display: flex; }
+
+    /* ─── EDIT MODE BUTTON ─── */
+    .edit-fab {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+      background: var(--text); color: white;
+      padding: 12px 20px; border-radius: 100px;
+      font-size: 0.82rem; font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: all var(--transition); border: none;
+    }
+    .edit-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.25); }
+    .edit-fab.active { background: var(--accent3); }
+    .edit-fab .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+    .edit-fab.active .dot { background: white; animation: pulse 1.5s ease-in-out infinite; }
+    /* Edit mode banner */
+    .edit-banner {
+      display: none; position: fixed; top: 64px; left:0; right:0; z-index: 999;
+      background: var(--accent); color: white;
+      padding: 10px 24px; text-align: center;
+      font-size: 0.82rem; font-weight: 600;
+    }
+    .edit-banner.show { display: block; }
+
+    /* ─── CONTACT ─── */
+    #contact { background: var(--surface); }
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-items: start; }
+    .contact-info h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 14px; letter-spacing: -.5px; }
+    .contact-info p { color: var(--muted); line-height: 1.8; margin-bottom: 28px; }
+    .contact-links { display: flex; flex-direction: column; gap: 12px; }
+    .contact-link { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; transition: all var(--transition); }
+    .contact-link:hover { border-color: var(--accent); transform: translateX(4px); }
+    .contact-link .cl-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .contact-link .cl-info strong { display: block; font-size: 0.83rem; font-weight: 700; }
+    .contact-link .cl-info span { font-size: 0.75rem; color: var(--muted); }
+    .missing-link { opacity: 0.5; border-style: dashed; }
+    .contact-form { display: flex; flex-direction: column; gap: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; }
+    .form-group input, .form-group textarea { padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-size: 0.86rem; font-family: inherit; transition: border-color var(--transition), box-shadow var(--transition); outline: none; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-submit { align-self: flex-start; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--text); color: rgba(255,255,255,.6); padding: 36px 0; text-align: center; font-size: 0.8rem; }
+    footer .footer-logo { color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
+    footer a { color: rgba(255,255,255,.6); transition: color var(--transition); }
+    footer a:hover { color: white; }
+
+    /* ─── FADE-IN ─── */
+    .fade-in { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width:900px) {
+      .hero-grid, .about-grid, .contact-wrap { grid-template-columns: 1fr; gap: 36px; }
+      .hero-visual { display: none; }
+      .projects-grid { grid-template-columns: 1fr 1fr; }
+      .hero-stats { gap: 18px; }
+      .about-avatar { max-width: 260px; aspect-ratio:1; }
+      .about-badge { right:0; }
+    }
+    @media (max-width:600px) {
+      nav { padding: 0 18px; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left:0; right:0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 16px 20px; gap: 14px; }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-stats { flex-wrap: wrap; gap: 14px; }
+      section { padding: 70px 0; }
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Edit mode banner -->
+<div class="edit-banner" id="editBanner">
+  ✏️ Mode Édition actif — Clique sur les titres, descriptions et images pour modifier. Les changements sont sauvegardés automatiquement.
+</div>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <span>RP</span>
+    Ruben PIRES
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero">Accueil</a></li>
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#projects">Projets</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-blob blob1"></div>
+  <div class="hero-blob blob2"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content fade-in">
+        <div class="hero-tag">Étudiant en BUT Informatique</div>
+        <div class="hero-school">🎓 Gaming Campus · G.Tech 3</div>
+        <h1 class="hero-title">
+          Ruben PIRES<br>
+          <span class="gradient-text">Game Developer</span>
+        </h1>
+        <p class="hero-sub">
+          Étudiant en <strong>BUT Informatique</strong> au <strong>Gaming Campus</strong>, spécialisé en développement de jeux vidéo sur Unity, Unreal Engine, et créateur d'un moteur maison.
+        </p>
+        <div class="hero-btns">
+          <a href="#projects" class="btn btn-primary">Voir mes projets →</a>
+          <a href="#contact" class="btn btn-secondary">Me contacter</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number" id="counter1">0</span>
+            <span class="stat-label">Projets réalisés</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="counter2">0</span>
+            <span class="stat-label">Années d'études</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="counter3">0</span>
+            <span class="stat-label">Technologies</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual fade-in" style="transition-delay:.2s">
+        <div class="hero-card">
+          <div class="card-icon" style="background:#dbeafe">🎮</div>
+          <h4>Unity Projects</h4>
+          <p>Jeux 2D & 3D, systèmes gameplay</p>
+          <span class="badge" style="background:#dbeafe;color:#2563eb">C# · Unity</span>
+        </div>
+        <div class="hero-card">
+          <div class="card-icon" style="background:#fee2e2">⚡</div>
+          <h4>Unreal Engine</h4>
+          <p>Graphismes AAA, C++ & Blueprints</p>
+          <span class="badge" style="background:#fee2e2;color:#ef4444">C++ · UE5</span>
+        </div>
+        <div class="hero-card wide">
+          <div class="card-icon" style="background:#ede9fe">⚙️</div>
+          <h4>Custom Engine</h4>
+          <p>Moteur maison — renderer OpenGL/Vulkan, ECS, physique & scripting</p>
+          <span class="badge" style="background:#ede9fe;color:#7c3aed">C++ · OpenGL · Vulkan</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap fade-in">
+        <div class="about-avatar" id="avatarBox">🧑‍💻</div>
+        <div class="about-badge">
+          <div class="icon">🎓</div>
+          <div>
+            <strong>Gaming Campus</strong>
+            <span>G.Tech 3 · BUT Informatique</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-content fade-in" style="transition-delay:.15s">
+        <div class="section-tag" style="text-align:left">À propos de moi</div>
+        <h2>Créer des mondes,<br>un moteur à la fois.</h2>
+        <p>
+          Étudiant en 3ème année de BUT Informatique au <strong>Gaming Campus</strong>, je me passionne autant pour le game design que pour les aspects techniques les plus bas niveau. Je maîtrise Unity et Unreal Engine, et développe mon propre moteur de jeu from scratch.
+        </p>
+        <p>
+          Ma philosophie : comprendre les outils en profondeur pour en repousser les limites. Chaque projet est une opportunité d'apprendre et de construire quelque chose d'unique.
+        </p>
+        <div class="skills-grid">
+          <div class="skill-item"><span class="skill-icon">🎮</span><div><div class="skill-name">Unity (C#)</div><div class="skill-level">Avancé</div></div></div>
+          <div class="skill-item"><span class="skill-icon">⚡</span><div><div class="skill-name">Unreal Engine</div><div class="skill-level">Avancé</div></div></div>
+          <div class="skill-item"><span class="skill-icon">⚙️</span><div><div class="skill-name">Custom Engine</div><div class="skill-level">Expert</div></div></div>
+          <div class="skill-item"><span class="skill-icon">🖥️</span><div><div class="skill-name">OpenGL / Vulkan</div><div class="skill-level">Intermédiaire</div></div></div>
+          <div class="skill-item"><span class="skill-icon">🧮</span><div><div class="skill-name">Maths & Physique</div><div class="skill-level">Avancé</div></div></div>
+          <div class="skill-item"><span class="skill-icon">🌐</span><div><div class="skill-name">Shaders / HLSL</div><div class="skill-level">Intermédiaire</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJECTS ═══ -->
+<section id="projects">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Mes réalisations</div>
+      <h2 class="section-title">Projets</h2>
+      <p class="section-desc">Filtre par technologie. En mode Édition, clique sur une image pour uploader la tienne.</p>
+    </div>
+    <div class="project-tabs">
+      <button class="tab-btn active all"    onclick="filterProjects('all')">Tous</button>
+      <button class="tab-btn unity"         onclick="filterProjects('unity')"><span class="dot" style="background:var(--unity)"></span>Unity</button>
+      <button class="tab-btn unreal"        onclick="filterProjects('unreal')"><span class="dot" style="background:var(--unreal)"></span>Unreal Engine</button>
+      <button class="tab-btn custom"        onclick="filterProjects('custom')"><span class="dot" style="background:var(--custom)"></span>Custom Engine</button>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid">
+
+      <!-- UNITY 1 -->
+      <div class="project-card fade-in" data-type="unity" data-id="u1">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)" onclick="triggerUpload('u1')">
+          <span class="thumb-emoji">🗡️</span>
+          <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+          <span class="thumb-label" style="color:var(--unity)">UNITY</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type" style="color:var(--unity)"><span class="dot" style="background:var(--unity)"></span>Unity</div>
+          <div class="project-title" contenteditable="false" data-field="title">Projet Unity 1</div>
+          <div class="project-desc" contenteditable="false" data-field="desc">Clique sur ✏️ Mode Édition puis modifie ce texte pour décrire ton projet.</div>
+          <div class="project-tags"><span class="tag">C#</span><span class="tag">Unity</span></div>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="#" class="link-btn" contenteditable="false" data-field="github">GitHub</a>
+            <a href="#" class="link-btn" contenteditable="false" data-field="demo">Demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- UNITY 2 -->
+      <div class="project-card fade-in" data-type="unity" data-id="u2" style="transition-delay:.05s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd)" onclick="triggerUpload('u2')">
+          <span class="thumb-emoji">🌍</span>
+          <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+          <span class="thumb-label" style="color:var(--unity)">UNITY</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type" style="color:var(--unity)"><span class="dot" style="background:var(--unity)"></span>Unity</div>
+          <div class="project-title" contenteditable="false" data-field="title">Projet Unity 2</div>
+          <div class="project-desc" contenteditable="false" data-field="desc">Description de ton deuxième projet Unity.</div>
+          <div class="project-tags"><span class="tag">C#</span><span class="tag">2D</span></div>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="#" class="link-btn" contenteditable="false" data-field="github">GitHub</a>
+            <a href="#" class="link-btn" contenteditable="false" data-field="demo">Demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- UNITY 3 -->
+      <div class="project-card fade-in" data-type="unity" data-id="u3" style="transition-delay:.1s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#eff6ff,#dbeafe)" onclick="triggerUpload('u3')">
+          <span class="thumb-emoji">🏰</span>
+          <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+          <span class="thumb-label" style="color:var(--unity)">UNITY</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type" style="color:var(--unity)"><span class="dot" style="background:var(--unity)"></span>Unity</div>
+          <div class="project-title" contenteditable="false" data-field="title">Projet Unity 3</div>
+          <div class="project-desc" contenteditable="false" data-field="desc">Description de ton troisième projet Unity.</div>
+          <div class="project-tags"><span class="tag">C#</span><span class="tag">3D</span></div>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="#" class="link-btn" contenteditable="false" data-field="github">GitHub</a>
+            <a href="#" class="link-btn" contenteditable="false" data-field="demo">Demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- UNREAL 1 -->
+      <div class="project-card fade-in" data-type="unreal" data-id="ur1" style="transition-delay:.05s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#fee2e2,#fecaca)" onclick="triggerUpload('ur1')">
+          <span class="thumb-emoji">🔫</span>
+          <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+          <span class="thumb-label" style="color:var(--unreal)">UNREAL</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type" style="color:var(--unreal)"><span class="dot" style="background:var(--unreal)"></span>Unreal Engine</div>
+          <div class="project-title" contenteditable="false" data-field="title">Projet Unreal 1</div>
+          <div class="project-desc" contenteditable="false" data-field="desc">Description de ton premier projet Unreal Engine.</div>
+          <div class="project-tags"><span class="tag">C++</span><span class="tag">Blueprints</span></div>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="#" class="link-btn" contenteditable="false" data-field="github">GitHub</a>
+            <a href="#" class="link-btn" contenteditable="false" data-field="demo">Demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- UNREAL 2 -->
+      <div class="project-card fade-in" data-type="unreal" data-id="ur2" style="transition-delay:.1s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#fef2f2,#fee2e2)" onclick="triggerUpload('ur2')">
+          <span class="thumb-emoji">🌋</span>
+          <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+          <span class="thumb-label" style="color:var(--unreal)">UNREAL</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type" style="color:var(--unreal)"><span class="dot" style="background:var(--unreal)"></span>Unreal Engine</div>
+          <div class="project-title" contenteditable="false" data-field="title">Projet Unreal 2</div>
+          <div class="project-desc" contenteditable="false" data-field="desc">Description de ton deuxième projet Unreal Engine.</div>
+          <div class="project-tags"><span class="tag">C++</span><span class="tag">Nanite</span></div>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="#" class="link-btn" contenteditable="false" data-field="github">GitHub</a>
+            <a href="#" class="link-btn" contenteditable="false" data-field="demo">Demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM 1 -->
+      <div class="project-card fade-in" data-type="custom" data-id="c1" style="transition-delay:.1s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)" onclick="triggerUpload('c1')">
+          <span class="thumb-emoji">⚙️</span>
+          <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+          <span class="thumb-label" style="color:var(--custom)">CUSTOM</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type" style="color:var(--custom)"><span class="dot" style="background:var(--custom)"></span>Custom Engine</div>
+          <div class="project-title" contenteditable="false" data-field="title">Mon Moteur Custom</div>
+          <div class="project-desc" contenteditable="false" data-field="desc">Moteur de jeu développé from scratch avec renderer OpenGL/Vulkan, ECS, système physique et scripting.</div>
+          <div class="project-tags"><span class="tag">C++</span><span class="tag">OpenGL</span><span class="tag">ECS</span></div>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="#" class="link-btn" contenteditable="false" data-field="github">GitHub</a>
+            <a href="#" class="link-btn" contenteditable="false" data-field="demo">Demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM 2 -->
+      <div class="project-card fade-in" data-type="custom" data-id="c2" style="transition-delay:.15s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe)" onclick="triggerUpload('c2')">
+          <span class="thumb-emoji">🔬</span>
+          <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+          <span class="thumb-label" style="color:var(--custom)">CUSTOM</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type" style="color:var(--custom)"><span class="dot" style="background:var(--custom)"></span>Custom Engine</div>
+          <div class="project-title" contenteditable="false" data-field="title">Démo Custom Engine 2</div>
+          <div class="project-desc" contenteditable="false" data-field="desc">Démo ou feature avancée de ton moteur custom (Vulkan renderer, PBR, etc.)</div>
+          <div class="project-tags"><span class="tag">C++</span><span class="tag">Vulkan</span></div>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="#" class="link-btn" contenteditable="false" data-field="github">GitHub</a>
+            <a href="#" class="link-btn" contenteditable="false" data-field="demo">Demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD PROJECT PLACEHOLDER -->
+      <div class="add-project-card" id="addProjectCard" onclick="addProject()">
+        <div class="plus">+</div>
+        <span>Ajouter un projet</span>
+      </div>
+
+    </div><!-- /projects-grid -->
+
+    <!-- Hidden file input for image uploads -->
+    <input type="file" id="imageUploadInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)" />
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Me contacter</div>
+      <h2 class="section-title">Travaillons ensemble</h2>
+      <p class="section-desc">Une question, une collaboration ou juste un bonjour ?</p>
+    </div>
+    <div class="contact-wrap">
+      <div class="contact-info fade-in">
+        <h2>Restons en contact</h2>
+        <p>Je suis ouvert aux projets, collaborations et opportunités professionnelles dans le game dev. N'hésite pas à m'écrire !</p>
+        <div class="contact-links">
+          <a href="mailto:ruben2pires@gmail.com" class="contact-link">
+            <div class="cl-icon">📧</div>
+            <div class="cl-info"><strong>Email</strong><span>ruben2pires@gmail.com</span></div>
+          </a>
+          <a href="https://www.linkedin.com/in/ruben-pires-0a9a36293/" target="_blank" class="contact-link">
+            <div class="cl-icon">💼</div>
+            <div class="cl-info"><strong>LinkedIn</strong><span>linkedin.com/in/ruben-pires-0a9a36293</span></div>
+          </a>
+          <a href="#" class="contact-link missing-link" id="linkGithub" title="Ajoute ton GitHub en Mode Édition">
+            <div class="cl-icon">🐙</div>
+            <div class="cl-info"><strong>GitHub</strong><span id="githubText">À renseigner (Mode Édition)</span></div>
+          </a>
+          <a href="#" class="contact-link missing-link" id="linkItch" title="Ajoute ton itch.io en Mode Édition">
+            <div class="cl-icon">🎮</div>
+            <div class="cl-info"><strong>itch.io</strong><span id="itchText">À renseigner (Mode Édition)</span></div>
+          </a>
+        </div>
+      </div>
+      <form class="contact-form fade-in" style="transition-delay:.15s" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group"><label for="fname">Prénom</label><input type="text" id="fname" placeholder="Jean" required /></div>
+          <div class="form-group"><label for="lname">Nom</label><input type="text" id="lname" placeholder="Dupont" required /></div>
+        </div>
+        <div class="form-group"><label for="email">Email</label><input type="email" id="email" placeholder="jean@exemple.fr" required /></div>
+        <div class="form-group"><label for="subject">Sujet</label><input type="text" id="subject" placeholder="Collaboration, projet, question…" /></div>
+        <div class="form-group"><label for="message">Message</label><textarea id="message" placeholder="Décris ton projet ou ta demande…" required></textarea></div>
+        <button type="submit" class="btn btn-primary form-submit">Envoyer le message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">Ruben PIRES — Game Developer · Gaming Campus</div>
+    <p>© 2026 Ruben PIRES. Tous droits réservés.</p>
+    <p style="margin-top:6px">
+      <a href="#hero">Accueil</a> · <a href="#about">À propos</a> · <a href="#projects">Projets</a> · <a href="#contact">Contact</a>
+    </p>
+  </div>
+</footer>
+
+<!-- ═══ EDIT FAB ═══ -->
+<button class="edit-fab" id="editFab" onclick="toggleEditMode()">
+  <span class="dot"></span> ✏️ Mode Édition
+</button>
+
+<script>
+// ── INIT ─────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'portfolio_data_rp';
+let editMode = false;
+let currentUploadId = null;
+
+// ── LOAD FROM LOCALSTORAGE ────────────────────────────────────────────
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    // Projects text & images
+    if (data.projects) {
+      Object.entries(data.projects).forEach(([id, p]) => {
+        const card = document.querySelector(`.project-card[data-id="${id}"]`);
+        if (!card) return;
+        if (p.title) card.querySelector('[data-field="title"]').textContent = p.title;
+        if (p.desc)  card.querySelector('[data-field="desc"]').textContent  = p.desc;
+        if (p.img)   setThumbImage(card, p.img);
+        if (p.github) { const el = card.querySelector('[data-field="github"]'); if(el){ el.textContent=p.github.text||'GitHub'; el.href=p.github.href||'#'; } }
+        if (p.demo)   { const el = card.querySelector('[data-field="demo"]');   if(el){ el.textContent=p.demo.text||'Demo →';   el.href=p.demo.href||'#'; } }
+      });
+    }
+    // Contact links
+    if (data.github) { document.getElementById('linkGithub').href = data.github; document.getElementById('githubText').textContent = data.github; document.getElementById('linkGithub').classList.remove('missing-link'); }
+    if (data.itch)   { document.getElementById('linkItch').href   = data.itch;   document.getElementById('itchText').textContent   = data.itch;   document.getElementById('linkItch').classList.remove('missing-link'); }
+    // Stats
+    if (data.stats) {
+      if (data.stats.s1) { window._stat1 = parseInt(data.stats.s1); }
+      if (data.stats.s2) { window._stat2 = parseInt(data.stats.s2); }
+      if (data.stats.s3) { window._stat3 = parseInt(data.stats.s3); }
+    }
+  } catch(e) { console.warn('loadData error', e); }
+}
+
+function saveData() {
+  try {
+    const data = { projects: {}, github: document.getElementById('linkGithub').href, itch: document.getElementById('linkItch').href };
+    document.querySelectorAll('.project-card[data-id]').forEach(card => {
+      const id = card.dataset.id;
+      const img = card.querySelector('.project-thumb img');
+      const github = card.querySelector('[data-field="github"]');
+      const demo   = card.querySelector('[data-field="demo"]');
+      data.projects[id] = {
+        title:  card.querySelector('[data-field="title"]')?.textContent,
+        desc:   card.querySelector('[data-field="desc"]')?.textContent,
+        img:    img ? img.src : null,
+        github: github ? { text: github.textContent, href: github.href } : null,
+        demo:   demo   ? { text: demo.textContent,   href: demo.href   } : null,
+      };
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch(e) { console.warn('saveData error', e); }
+}
+
+// ── SET THUMB IMAGE ────────────────────────────────────────────────────
+function setThumbImage(card, src) {
+  const thumb = card.querySelector('.project-thumb');
+  let img = thumb.querySelector('img');
+  if (!img) { img = document.createElement('img'); thumb.prepend(img); }
+  img.src = src;
+  img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+  const emoji = thumb.querySelector('.thumb-emoji');
+  if (emoji) emoji.style.display = 'none';
+}
+
+// ── EDIT MODE ─────────────────────────────────────────────────────────
+function toggleEditMode() {
+  editMode = !editMode;
+  const fab     = document.getElementById('editFab');
+  const banner  = document.getElementById('editBanner');
+  const body    = document.body;
+
+  fab.classList.toggle('active', editMode);
+  fab.innerHTML = editMode
+    ? '<span class="dot"></span> ✅ Terminer l\'édition'
+    : '<span class="dot"></span> ✏️ Mode Édition';
+  banner.classList.toggle('show', editMode);
+  body.classList.toggle('edit-mode', editMode);
+
+  // Toggle contenteditable
+  document.querySelectorAll('[contenteditable]').forEach(el => {
+    el.contentEditable = editMode ? 'true' : 'false';
+  });
+
+  if (!editMode) { saveData(); showSaveToast(); }
+}
+
+function showSaveToast() {
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:90px;right:28px;background:#059669;color:white;padding:10px 18px;border-radius:10px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);';
+  toast.textContent = '✓ Modifications sauvegardées';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2800);
+}
+
+// ── IMAGE UPLOAD ──────────────────────────────────────────────────────
+function triggerUpload(id) {
+  if (!editMode) return;
+  currentUploadId = id;
+  document.getElementById('imageUploadInput').value = '';
+  document.getElementById('imageUploadInput').click();
+}
+
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file || !currentUploadId) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const card = document.querySelector(`.project-card[data-id="${currentUploadId}"]`);
+    if (!card) return;
+    setThumbImage(card, ev.target.result);
+    saveData();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── ADD PROJECT ───────────────────────────────────────────────────────
+let newCount = 0;
+function addProject() {
+  newCount++;
+  const id = 'new' + newCount;
+  const grid = document.getElementById('projectsGrid');
+  const addBtn = document.getElementById('addProjectCard');
+
+  const types = [
+    { type:'unity',  label:'UNITY',  color:'var(--unity)',  bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)', emoji:'🎮' },
+    { type:'unreal', label:'UNREAL', color:'var(--unreal)', bg:'linear-gradient(135deg,#fee2e2,#fecaca)', emoji:'⚡' },
+    { type:'custom', label:'CUSTOM', color:'var(--custom)', bg:'linear-gradient(135deg,#ede9fe,#ddd6fe)', emoji:'⚙️' },
+  ];
+  const t = types[newCount % 3];
+
+  const card = document.createElement('div');
+  card.className = 'project-card fade-in visible';
+  card.dataset.type = t.type;
+  card.dataset.id   = id;
+  card.innerHTML = `
+    <div class="project-thumb" style="background:${t.bg}" onclick="triggerUpload('${id}')">
+      <span class="thumb-emoji">${t.emoji}</span>
+      <div class="upload-overlay"><span>📁</span><span>Changer l'image</span></div>
+      <span class="thumb-label" style="color:${t.color}">${t.label}</span>
+    </div>
+    <div class="project-body">
+      <div class="project-type" style="color:${t.color}"><span class="dot" style="background:${t.color}"></span>${t.label.charAt(0)+t.label.slice(1).toLowerCase()}</div>
+      <div class="project-title" contenteditable="true" data-field="title">Nouveau projet</div>
+      <div class="project-desc" contenteditable="true" data-field="desc">Décris ton projet ici…</div>
+      <div class="project-tags"><span class="tag">Tag</span></div>
+    </div>
+    <div class="project-footer">
+      <div class="project-links">
+        <a href="#" class="link-btn" contenteditable="true" data-field="github">GitHub</a>
+        <a href="#" class="link-btn" contenteditable="true" data-field="demo">Demo →</a>
+      </div>
+    </div>`;
+  grid.insertBefore(card, addBtn);
+}
+
+// ── PROJECT FILTER ────────────────────────────────────────────────────
+function filterProjects(type) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.project-card').forEach(c => {
+    c.classList.toggle('hidden', type !== 'all' && c.dataset.type !== type);
+  });
+}
+
+// ── COUNTER ANIMATION ─────────────────────────────────────────────────
+function animateCounter(el, target, suffix='') {
+  let n=0; const step=Math.ceil(target/40);
+  const iv=setInterval(()=>{ n=Math.min(n+step,target); el.textContent=n+suffix; if(n>=target) clearInterval(iv); },35);
+}
+const cObs = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    animateCounter(document.getElementById('counter1'), window._stat1||8, '+');
+    animateCounter(document.getElementById('counter2'), window._stat2||3, 'ans');
+    animateCounter(document.getElementById('counter3'), window._stat3||8, '+');
+    cObs.disconnect();
+  }
+}, { threshold:.5 });
+cObs.observe(document.getElementById('hero'));
+
+// ── NAVBAR ─────────────────────────────────────────────────────────────
+const navbar = document.getElementById('navbar');
+const navAnchors = document.querySelectorAll('.nav-links a:not(.nav-cta)');
+const sects = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 10);
+  let cur = '';
+  sects.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  navAnchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+cur));
+});
+
+// ── MOBILE MENU ────────────────────────────────────────────────────────
+function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', ()=>document.getElementById('navLinks').classList.remove('open')));
+
+// ── FADE-IN ────────────────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }), { threshold:.1 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+// ── CONTACT FORM ────────────────────────────────────────────────────────
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit');
+  btn.textContent='✓ Message envoyé !'; btn.style.background='var(--accent3)'; btn.disabled=true;
+  setTimeout(()=>{ btn.textContent='Envoyer le message →'; btn.style.background=''; btn.disabled=false; e.target.reset(); }, 3200);
+}
+
+// ── RUN ON LOAD ─────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
